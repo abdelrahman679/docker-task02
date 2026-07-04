@@ -83,9 +83,9 @@ services:
     build:
       args:
         - NODE_ENV=development
-      context: backendapp
+      context: backend
       target: development
-    container_name: backend
+    container_name: backendapp
     command: npm run start-watch
     restart: always
     environment:
@@ -105,7 +105,9 @@ services:
       - back-notused:/opt/app/node_modules
     networks:
       - back-tier                # nginx <-> backend
-      - data-tier                # backend <-> db
+      - data-tier                # backend <-> db  
+      - monitoring
+      
     depends_on:
       db: 
         condition: service_healthy
@@ -148,6 +150,25 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+          
+  mysqld-exporter:
+    image: prom/mysqld-exporter:v0.14.0
+    container_name: mysqld-exporter
+    restart: unless-stopped
+
+    environment:
+      DATA_SOURCE_NAME: "exporter:exporter_password@(db:3306)/"
+
+    expose:
+      - "9104"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    networks:
+      - data-tier
+      - monitoring
 
   frontend:
     build:
