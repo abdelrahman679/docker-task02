@@ -12,7 +12,7 @@ services:
       - back-tier
     depends_on:
       frontend:
-        condition: service_started
+        condition: service_healthy
       backend:
         condition: service_healthy   # backend's own HEALTHCHECK (healthcheck.js)
     read_only: true             # container fs is read-only
@@ -21,6 +21,14 @@ services:
       - /var/run
     security_opt:
       - no-new-privileges:true
+    cpus: "0.5"
+    mem_limit: 128m
+    logging:
+      driver: local
+      options:
+        max-size: "5m"
+        max-file: "3"
+
 
   backend:
     build:
@@ -48,7 +56,15 @@ services:
       - back-tier                # nginx <-> backend
       - data-tier                # backend <-> db
     depends_on:
-      - db
+      db: 
+        condition: service_healthy
+    cpus: "0.5"
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   db:
     # We use a mariadb image which supports both amd64 & arm64 architecture
@@ -72,6 +88,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+      
+    cpus: "0.5"
+    mem_limit: 128m
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   frontend:
     build:
@@ -83,7 +107,21 @@ services:
       - ./frontend/src:/code/src
       - /code/node_modules
     networks:
-      - front-tier                # nginx <-> frontend only
+      - front-tier # nginx <-> frontend only
+    healthcheck:
+     test: ["CMD","node","-e","require('http').get('http://localhost:3000',res=>process.exit(res.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+     interval: 10s
+     timeout: 5s
+     retries: 5
+     start_period: 30s
+    logging:
+      driver: local
+      options:
+        max-size: "10m"
+        max-file: "3"
+     
+    cpus: "0.5"
+    mem_limit: 500m
 
 networks:
   front-tier:      # nginx <-> frontend
