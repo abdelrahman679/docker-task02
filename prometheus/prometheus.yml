@@ -12,7 +12,8 @@ scrape_configs:
 
     static_configs:
       - targets:
-          - backend:80
+          - backend1:80
+          - backend2:80
           
   - job_name: mysql
 
