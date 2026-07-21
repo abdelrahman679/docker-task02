@@ -88,7 +88,25 @@ services:
 
     volumes:
       - grafana-data:/var/lib/grafana
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    restart: unless-stopped
 
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+
+    ports:
+      - "8081:8080"
+
+    volumes:
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/acme.json:/acme.json
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+    networks:
+      - front-tier
+      - back-tier
   nginx:
     image: nginx:1.27-alpine
     container_name: rproxy
@@ -186,6 +204,16 @@ services:
     container_name: frontapp
     expose:
       - "3000"                   # reachable inside the network only
+
+    labels:
+     - "traefik.enable=true"
+
+      # Router
+     - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"
+     - "traefik.http.routers.frontend.entrypoints=web"
+
+      # Service
+     - "traefik.http.services.frontend.loadbalancer.server.port=3000"    
     volumes:
       - ./frontend/src:/code/src
       - /code/node_modules
