@@ -4,7 +4,7 @@ set -e
 # =====================================
 # Configuration
 # =====================================
-PROJECT_NAME="react-express-mysql"
+PROJECT_NAME=$(basename "$(cd "$(dirname "$0")/.." && pwd)" | tr '[:upper:]' '[:lower:]')
 REPLICA_SERVICE="db-replica"
 REPLICA_CONTAINER="dbrep"
 REPLICA_VOLUME="${PROJECT_NAME}_db-replica-data"
