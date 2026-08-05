@@ -1,0 +1,15 @@
+global:
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'abdalrahmanmostafa22@gmail.com'
+  smtp_auth_username: 'abdalrahmanmostafa22@gmail.com'
+  smtp_auth_password: 'ebrb zema xfbw tcov'
+  smtp_require_tls: true
+
+route:
+  receiver: email
+
+receivers:
+  - name: email
+    email_configs:
+      - to: 'abdalrahmanmostafa22@gmail.com'
+        send_resolved: true

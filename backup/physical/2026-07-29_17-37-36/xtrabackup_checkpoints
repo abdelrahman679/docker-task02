@@ -1,0 +1,5 @@
+backup_type = log-applied
+from_lsn = 0
+to_lsn = 46817
+last_lsn = 47646
+recover_binlog_info = 0

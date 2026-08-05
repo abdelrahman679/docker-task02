@@ -1,0 +1,23 @@
+groups:
+  - name: infrastructure
+    rules:
+      - alert: BackendDown
+        expr: up{job="backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: Backend instance is down
+          description: One backend instance has not been reachable for more than one minute.
+      - alert: HighMemoryUsage
+        expr: (
+                container_memory_working_set_bytes{name=~"backend.*"}
+                /
+                container_spec_memory_limit_bytes{name=~"backend.*"}
+              ) * 100 > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: Backend memory usage is high
+          description: Memory usage is above 80% for more than one minute.

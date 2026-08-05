@@ -1,10 +1,25 @@
+const redisClient = require("./redis");
 const app = require("./server");
 const { port } = require("./config");
 
-const server = app.listen(port, function() {
-  console.log("Webserver is ready");
-});
 
+
+async function start() {
+  await redisClient.connect();
+  console.log("Connected to Redis");
+
+  const server = app.listen(port, function () {
+    console.log("Webserver is ready");
+  });
+
+  // Move your existing SIGINT, SIGTERM, and shutdown()
+  // code here unchanged.
+}
+
+start().catch((err) => {
+  console.error("Application startup failed:", err);
+  process.exit(1);
+});
 //
 // need this in docker container to properly exit since node doesn't handle SIGINT/SIGTERM
 // this also won't work on using npm start since:

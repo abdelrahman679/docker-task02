@@ -1,0 +1,5 @@
+# Every 5 minutes (testing)
+# */5 * * * * /backup/backup.sh >> /proc/1/fd/1 2>&1
+
+# Every 6 hours (production)
+0 */6 * * * /backup/backup.sh >> /proc/1/fd/1 2>&1

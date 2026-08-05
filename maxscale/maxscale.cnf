@@ -1,0 +1,63 @@
+[maxscale]
+threads=auto
+
+# ==========================================
+# MariaDB Servers
+# ==========================================
+
+[db-primary]
+type=server
+address=db-primary
+port=3306
+protocol=MariaDBBackend
+
+[db-replica]
+type=server
+address=db-replica
+port=3306
+protocol=MariaDBBackend
+
+# ==========================================
+# Monitor
+# ==========================================
+
+[MariaDB-Monitor]
+type=monitor
+module=mariadbmon
+
+servers=db-primary,db-replica
+
+user=maxscale
+password=maxscale_password
+
+monitor_interval=2s
+auto_failover=True
+auto_rejoin=True
+replication_user=replicator
+replication_password=replica_password
+
+# ==========================================
+# Read/Write Service
+# ==========================================
+
+[ReadWrite-Service]
+type=service
+router=readwritesplit
+
+servers=db-primary,db-replica
+
+user=maxscale
+password=maxscale_password
+enable_root_user=true
+
+# ==========================================
+# Listener
+# ==========================================
+
+[ReadWrite-Listener]
+type=listener
+
+service=ReadWrite-Service
+protocol=MariaDBClient
+
+port=3306

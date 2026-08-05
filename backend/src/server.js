@@ -1,6 +1,6 @@
 // simple node web server that displays hello world
 // optimized for Docker image
-
+const redisClient = require("./redis");
 const express = require("express");
 // this example uses express web framework so we know what longer build times
 // do and how Dockerfile layer ordering matters. If you mess up Dockerfile ordering
@@ -157,7 +157,7 @@ app.post("/person", function (req, res, next) {
 });
 
 // GET /person/:id -> fetch a person by id
-app.get("/person/:id", function (req, res, next) {
+app.get("/person/:id", async function (req, res, next) {
   const { id } = req.params;
 
   const { valid, error } = validateGetPersonInput(id);
@@ -165,14 +165,39 @@ app.get("/person/:id", function (req, res, next) {
     return res.status(400).json({ message: error });
   }
 
-  findPersonById(id)
-    .then((person) => {
-      if (!person) {
-        return res.status(404).json({ message: "Person not found" });
+  try {
+    // Check Redis first
+    const cachedPerson = await redisClient.get(`person:${id}`);
+
+    if (cachedPerson) {
+      console.log(`Cache HIT for person:${id}`);
+      return res.json({ person: JSON.parse(cachedPerson) });
+    }
+
+    console.log(`Cache MISS for person:${id}`);
+
+    // Query MariaDB
+    const person = await findPersonById(id);
+
+    if (!person) {
+      return res.status(404).json({ message: "Person not found" });
+    }
+
+    // Store in Redis for 60 seconds
+    await redisClient.set(
+      `person:${id}`,
+      JSON.stringify(person),
+      {
+        EX: 60,
       }
-      res.json({ person });
-    })
-    .catch(next);
+    );
+
+    console.log(`Cached person:${id}`);
+
+    res.json({ person });
+  } catch (err) {
+    next(err);
+  }
 });
 
 app.get("/healthz", function(req, res, next) {

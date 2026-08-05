@@ -1,0 +1,17 @@
+uuid = deebe037-8cc2-11f1-911c-4a055754a96d
+name = 
+tool_name = mariadb-backup
+tool_command = --backup --host=db-primary --user=root --password=... --target-dir=/backup/physical/2026-07-31_09-33-19
+tool_version = 10.6.27-MariaDB
+ibbackup_version = 10.6.27-MariaDB
+server_version = 10.6.27-MariaDB-ubu2204-log
+start_time = 2026-07-31 09:33:19
+end_time = 2026-07-31 09:33:21
+lock_time = 0
+binlog_pos = filename 'mysql-bin.000010', position '621', GTID of the last change '0-1-52'
+innodb_from_lsn = 0
+innodb_to_lsn = 52536
+partial = N
+incremental = N
+format = file
+compressed = N

@@ -1,0 +1,6 @@
+FROM mariadb:10.6
+
+COPY primary.cnf /etc/mysql/conf.d/
+
+#COPY replication-user.sql /docker-entrypoint-initdb.d/
+COPY init-users.sql /docker-entrypoint-initdb.d/

@@ -41,7 +41,10 @@ function App() {
   async function insertPerson(personId, personFirstname, personLastname) {
     const response = await fetch("/api/person", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+      "Content-Type": "application/json",
+      "X-API-Key": "my-secret-key",
+    },
       body: JSON.stringify({
         id: personId,
         firstname: personFirstname,
@@ -57,7 +60,13 @@ function App() {
 
   // Calls the backend Get endpoint for a given id.
   async function getPerson(personId) {
-    const response = await fetch(`/api/person/${encodeURIComponent(personId)}`);
+    const response = await fetch(`/api/person/${encodeURIComponent(personId)}` ,
+    {
+      headers: {
+        "X-API-Key": "my-secret-key",
+      },
+    }
+  ) ;
     const data = await response.json();
     if (!response.ok) {
       throw new Error(data.message || "Failed to fetch person");
