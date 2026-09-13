@@ -132,6 +132,10 @@ function App() {
             />
           </label>
 
+          <label>
+            V55 Test
+            <input type="text" />
+          </label>
           <div style={{ display: "flex", gap: "8px" }}>
             <button onClick={handleInsert}>Insert</button>
             <button onClick={handleGet}>Get</button>
