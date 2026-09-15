@@ -43,3 +43,5 @@ jobs:
 
       - name: Push Docker image
         run: docker push ghcr.io/abdelrahman679/t4-frontend:7.0
+
+# GHCR access test
