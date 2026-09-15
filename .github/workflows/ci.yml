@@ -27,3 +27,7 @@ jobs:
       - name: Build frontend
         run: npm run build
         working-directory: frontend
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/abdelrahman679/t4-frontend:7.0 .
+        working-directory: frontend
