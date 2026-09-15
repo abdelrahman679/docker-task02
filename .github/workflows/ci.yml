@@ -44,4 +44,9 @@ jobs:
       - name: Push Docker image
         run: docker push ghcr.io/abdelrahman679/t4-frontend:${{ github.run_number }}
 
+      - name: Clone GitOps repository
+        run: |
+          git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/abdelrahman679/k8s-t4.git
+
+
 # GHCR access test
