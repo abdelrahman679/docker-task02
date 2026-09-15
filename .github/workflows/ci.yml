@@ -38,10 +38,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/abdelrahman679/t4-frontend:7.0 .
+        run: docker build -t ghcr.io/abdelrahman679/t4-frontend:${{ github.run_number }} .
         working-directory: frontend
 
       - name: Push Docker image
-        run: docker push ghcr.io/abdelrahman679/t4-frontend:7.0
+        run: docker push ghcr.io/abdelrahman679/t4-frontend:${{ github.run_number }}
 
 # GHCR access test
