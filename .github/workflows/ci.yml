@@ -49,4 +49,12 @@ jobs:
           git clone https://x-access-token:${{ secrets.GITOPS_TOKEN }}@github.com/abdelrahman679/k8s-t4.git
 
 
-# GHCR access test
+      - name: Update frontend image
+        run: |
+          sed -i "s|image: ghcr.io/abdelrahman679/t4-frontend:.*|image: ghcr.io/abdelrahman679/t4-frontend:${{ github.run_number }}|" \
+            k8s-t4/task4-app/frontend/rollout.yaml
+      
+      - name: Verify image update
+        run: |
+          grep "image:" k8s-t4/task4-app/frontend/rollout.yaml
+
