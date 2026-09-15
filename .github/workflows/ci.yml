@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - frontend-k8s
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   test-runner:
