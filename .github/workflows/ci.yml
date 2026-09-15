@@ -58,3 +58,13 @@ jobs:
         run: |
           grep "image:" k8s-t4/task4-app/frontend/rollout.yaml
 
+      - name: Commit and push GitOps change
+        run: |
+          cd k8s-t4
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add task4-app/frontend/rollout.yaml
+          git commit -m "Update frontend image to ${{ github.run_number }}"
+          git push
