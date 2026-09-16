@@ -133,7 +133,7 @@ function App() {
           </label>
 
           <label>
-            V55 Test
+            V66 Test2
             <input type="text" />
           </label>
           <div style={{ display: "flex", gap: "8px" }}>
